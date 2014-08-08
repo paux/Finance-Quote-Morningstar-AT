@@ -1,0 +1,78 @@
+=head1 NAME
+
+`Finance::Quote::Morningstar::AT` - Obtain fund prices from
+http://Morningstar.AT/
+
+=head1 SYNOPSIS
+
+    use Finance::Quote;
+
+    $q = Finance::Quote->new;
+
+    %fundinfo = $q->fetch("morningstar_at","morningstar fund id");
+
+=head1 DESCRIPTION
+
+This module obtains information about fund prices from
+www.morningstar.at. It has been forked from `Morningstar.pm` which is
+distributed with `Finance::Quote`.
+
+This module is especially useful for locally (European) managed funds
+that are unknown to US sites.
+
+=head1 INSTALLATION
+
+Have `Finance::Quote` installed. In Debian and derivatives this is the package
+`libfinance-quote-perl`; it also gets installed with GnuCash.
+
+Then put the module `AT.pm` into the directory `Finance/Quote/Morningstar/`
+of your local Perl library directory, e.g.:
+
+    $ cd $USERLIB         # e.g. /usr/local/lib
+    $ mkdir perl          # unless exists
+    $ mkdir perl/$version # same as in /usr/lib/perl
+    $ mkdir -p perl/$version/Finance/Quote/Morningstar
+
+Copy `Quote.pm` from `Finance::Quote`, usually located at
+`/usr/lib/perl/$version/Finance/`, into `$USERLIB/perl/$version/Finance/` and edit it:
+Add `Morningstar::AT` to `@modules` (search for `Morningstar`).
+
+=head2 Testing
+
+1. Be sure your local Perl library directory version matches your actual Perl version:
+    $ ls -d /usr/lib/perl
+    $ ls -d $USERLIB/perl    # e.g. /usr/local/lib
+2. `perl -e 'use Finance::Quote::Morningstar::AT'` should not display anything,
+especially no error.
+3. If you want to use the module with GnuCash, execute
+    $ gnc-fq-dump | grep --color=auto morningstar
+You should see both `morningstar` and `morningstar_at`.
+
+=head1 FUND NAMES
+
+Morningstar.AT's fund IDs (in the URL!)
+
+=head1 LABELS RETURNED
+
+Information available from funds may include the following labels:
+date method source name currency nav. The prices are updated at the
+end of each bank day.
+
+=head1 SEE ALSO
+
+http://Morningstar.AT/
+
+=head1 AUTHOR
+
+Stephan Paukner <paux+dev@paukner.cc>
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright 2014 by Stephan Paukner
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+Other copyrights and conditions may apply to data fetched through this module.
