@@ -9,8 +9,8 @@ use LWP::UserAgent;
 use HTTP::Request::Common;
 use HTML::TableExtract;
 
-$VERSION = '0.14.6.12'; # 2014-06-12
-$MORNINGSTAR_AT_FUNDS_URL = 'http://www.morningstar.at/at/snapshot/snapshot.aspx?id=';
+$VERSION = '0.20.7.14'; # 2020-07-14
+$MORNINGSTAR_AT_FUNDS_URL = 'http://www.morningstar.at/at/funds/snapshot/snapshot.aspx?id=';
 
 sub methods { return (morningstar_at => \&morningstar_at); }
 
@@ -48,7 +48,7 @@ sub morningstar_at {
     for my $table ($te->tables()) {
 	  for my $row ($table->rows()) {
         if (defined(@$row[0])) {
-		  if ('NAV' eq substr(@$row[0],0,3) || 'Schluss' eq substr(@$row[0],0,7) ) {
+		  if (@$row[0] =~ /^(NAV|Schluss|Bid)/) {
             $value = substr($$row[2],5);
             $value =~ s/,/./g;
             $currency = substr($$row[2],0,3);
@@ -61,9 +61,10 @@ sub morningstar_at {
             $funds{$name, 'name'}   = $name;
             $funds{$name, 'p_change'} = "";  # p_change is not retrieved (yet?)
             my $date = substr(@$row[0],4);
-            if ( 'Schluss' eq substr(@$row[0],0,7) ) {
+            if (@$row[0] =~ /^Schluss/) {
                 $date = substr( @$row[0], 12 );
             }
+            $date =~ s/^\s+\W*\(?|\)?\s+$//g;
             $date = substr($date,8) . "/" . substr($date,3,2) . "/" . substr($date,0,2);
             $quoter->store_date(\%funds, $name, {isodate => $date});
             $dateset = 1;
@@ -120,3 +121,4 @@ end of each bank day.
 http://Morningstar.AT/
 
 =cut
+
